@@ -535,7 +535,7 @@ static void* ucs_stats_thread_func(void *arg)
     return NULL;
 }
 
-static void ucs_stats_open_dest()
+static void ucs_stats_open_dest(void)
 {
     ucs_status_t status;
     char *copy_str, *saveptr;
