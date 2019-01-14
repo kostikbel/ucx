@@ -39,7 +39,9 @@
 
 #include <sys/socket.h>
 #include <sys/types.h>
+#ifdef HAVE_SYS_EPOLL_H
 #include <sys/epoll.h>
+#endif
 #include <netinet/in.h>
 #include <assert.h>
 #include <netdb.h>

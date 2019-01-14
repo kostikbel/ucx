@@ -7,7 +7,9 @@
 #include "ucp_test.h"
 
 #include <algorithm>
+#ifdef HAVE_SYS_EPOLL_H
 #include <sys/epoll.h>
+#endif
 #include <sys/poll.h>
 
 
