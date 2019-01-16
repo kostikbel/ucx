@@ -16,7 +16,7 @@
 #include <ucs/sys/sys.h>
 #include <sys/poll.h>
 #include <sched.h>
-
+#include <netinet/in.h>
 
 typedef struct {
     union ibv_gid       gid;

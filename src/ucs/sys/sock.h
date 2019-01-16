@@ -16,6 +16,7 @@
 #include <net/if.h>
 #include <arpa/inet.h>
 #include <dirent.h>
+#include <netinet/in.h>
 
 BEGIN_C_DECLS
 

@@ -18,6 +18,7 @@
 #include <ucs/type/class.h>
 #include <ucs/datastruct/queue.h>
 #include <sys/poll.h>
+#include <netinet/in.h>
 #include <linux/ip.h>
 
 

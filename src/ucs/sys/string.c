@@ -17,6 +17,7 @@
 #include <ctype.h>
 #include <stdio.h>
 #include <time.h>
+#include <netinet/in.h>
 
 
 void ucs_fill_filename_template(const char *tmpl, char *buf, size_t max)

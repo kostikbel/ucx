@@ -24,6 +24,7 @@
 #include <sys/mman.h>
 #include <sys/types.h>
 #include <net/if.h>
+#include <netinet/in.h>
 #include <dirent.h>
 #include <sched.h>
 #include <ctype.h>

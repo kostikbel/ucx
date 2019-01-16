@@ -10,6 +10,7 @@
 #include "sa_util.h"
 
 #include <sys/socket.h>
+#include <netinet/in.h>
 #include <functional>
 #include <cstdint>
 #include <cstddef>
