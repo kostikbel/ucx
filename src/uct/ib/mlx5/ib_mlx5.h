@@ -41,7 +41,11 @@
 #include <uct/ib/mlx5/dv/ib_mlx5_dv.h>
 
 #include <netinet/in.h>
+#if defined HAVE_ENDIAN_H
 #include <endian.h>
+#elif defined HAVE_SYS_ENDIAN_H
+#include <sys/endian.h>
+#endif
 #include <string.h>
 
 

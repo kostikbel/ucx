@@ -16,7 +16,11 @@
 #include <ucs/debug/memtrack.h>
 #include <ucs/debug/log.h>
 #include <ucs/type/class.h>
+#if defined HAVE_ENDIAN_H
 #include <endian.h>
+#elif defined HAVE_SYS_ENDIAN_H
+#include <sys/endian.h>
+#endif
 
 #if ENABLE_STATS
 static ucs_stats_class_t uct_rc_fc_stats_class = {

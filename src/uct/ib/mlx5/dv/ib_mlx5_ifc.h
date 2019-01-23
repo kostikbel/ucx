@@ -10,7 +10,11 @@
 #include <ucs/sys/compiler_def.h>
 
 #include <stdint.h>
+#if defined HAVE_ENDIAN_H
 #include <endian.h>
+#elif defined HAVE_SYS_ENDIAN_H
+#include <sys/endian.h>
+#endif
 #include <linux/types.h>
 
 #define __uct_nullp(_typ) ((struct uct_ib_mlx5_##_typ##_bits *)0)

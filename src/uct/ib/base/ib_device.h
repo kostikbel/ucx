@@ -16,8 +16,11 @@
 #include <ucs/datastruct/khash.h>
 #include <ucs/type/spinlock.h>
 
+#if defined HAVE_ENDIAN_H
 #include <endian.h>
-
+#elif defined HAVE_SYS_ENDIAN_H
+#include <sys/endian.h>
+#endif
 
 #define UCT_IB_QPN_ORDER            24  /* How many bits can be an IB QP number */
 #define UCT_IB_LRH_LEN              8   /* IB Local routing header */
