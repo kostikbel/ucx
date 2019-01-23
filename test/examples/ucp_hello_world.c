@@ -33,6 +33,10 @@
  *    Sergey Shalnov <sergeysh@mellanox.com> 7-June-2016
  */
 
+#ifdef HAVE_CONFIG_H
+#  include "config.h"
+#endif
+
 #include "ucx_hello_world.h"
 
 #include <ucp/api/ucp.h>
