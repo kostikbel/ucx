@@ -10,6 +10,7 @@
 #  include "config.h"
 #endif
 
+#define _WANT_SYSVSHM_INTERNALS
 
 #include <ucs/algorithm/crc.h>
 #include <ucs/sys/checker.h>
