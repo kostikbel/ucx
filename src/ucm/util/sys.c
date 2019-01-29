@@ -18,7 +18,9 @@
 #include <ucm/util/log.h>
 #include <ucm/mmap/mmap.h>
 #include <ucs/sys/math.h>
+#ifdef HAVE_LINUX_MMAN_H
 #include <linux/mman.h>
+#endif
 #include <sys/mman.h>
 #include <pthread.h>
 #include <string.h>
