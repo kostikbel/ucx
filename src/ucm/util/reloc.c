@@ -33,7 +33,15 @@
 #include <link.h>
 #include <limits.h>
 
-typedef void * (*ucm_reloc_dlopen_func_t)(const char *, int);
+#ifndef ElfW
+#if __ELF_WORD_SIZE == 64
+#define ElfW(x) __CONCAT(Elf64_, x)
+#else
+#define ElfW(x) __CONCAT(Elf32_, x)
+#endif
+#endif
+
+ typedef void * (*ucm_reloc_dlopen_func_t)(const char *, int);
 
 typedef struct ucm_auxv {
     long               type;

@@ -27,6 +27,13 @@
 #  include <bfd.h>
 #endif /* HAVE_DETAILED_BACKTRACE */
 
+#ifndef ElfW
+#if __ELF_WORD_SIZE == 64
+#define ElfW(x) __CONCAT(Elf64_, x)
+#else
+#define ElfW(x) __CONCAT(Elf32_, x)
+#endif
+#endif
 
 KHASH_MAP_INIT_INT64(ucs_debug_symbol, char*);
 KHASH_MAP_INIT_INT(ucs_signal_orig_action, struct sigaction*);
