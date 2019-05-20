@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/local/bin/bash
 #
 # Copyright (C) Mellanox Technologies Ltd. 2001-2019.  ALL RIGHTS RESERVED.
 # Copyright (C) UT-Battelle, LLC. 2014. ALL RIGHTS RESERVED.
@@ -11,6 +11,10 @@
 #
 
 basedir=$(cd $(dirname $0) && pwd)
+export CC=gcc
+export CXX=g++
+export CPPFLAGS="-I/usr/local/include/libepoll-shim"
+export LDFLAGS="-lepoll-shim"
 $basedir/../configure \
 	--enable-profiling \
 	--enable-frame-pointer \
