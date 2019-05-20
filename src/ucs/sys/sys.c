@@ -41,6 +41,9 @@
 #define UCS_DEFAULT_MEM_FREE       640000
 #define UCS_PROCESS_SMAPS_FILE     "/proc/self/smaps"
 
+#ifndef HOST_NAME_MAX
+#define	HOST_NAME_MAX 255
+#endif
 
 const char *ucs_get_tmpdir(void)
 {

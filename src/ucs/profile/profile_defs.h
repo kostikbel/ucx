@@ -19,6 +19,9 @@ BEGIN_C_DECLS
 #define UCS_PROFILE_STACK_MAX     64
 #define UCS_PROFILE_FILE_VERSION  2u
 
+#ifndef HOST_NAME_MAX
+#define	HOST_NAME_MAX 255
+#endif
 
 /**
  * Profiling modes

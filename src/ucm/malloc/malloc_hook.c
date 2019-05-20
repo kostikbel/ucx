@@ -33,6 +33,9 @@
 #include <ucs/sys/sys.h>
 #include <ucs/type/spinlock.h>
 
+#ifndef HOST_NAME_MAX
+#define	HOST_NAME_MAX 255
+#endif
 
 /* make khash allocate memory directly from operating system */
 #define kmalloc  ucm_sys_malloc

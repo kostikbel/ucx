@@ -16,6 +16,9 @@
 
 #define UCS_MAX_LOG_HANDLERS    32
 
+#ifndef HOST_NAME_MAX
+#define	HOST_NAME_MAX 255
+#endif
 
 const char *ucs_log_level_names[] = {
     [UCS_LOG_LEVEL_FATAL]        = "FATAL",
