@@ -129,12 +129,21 @@ void *ucm_sys_realloc(void *ptr, size_t size)
         return ptr;
     }
 
+#ifdef MREMAP_MAYMOVE
     newptr = ucm_orig_mremap(oldptr, oldsize, sys_size, MREMAP_MAYMOVE);
     if (newptr == MAP_FAILED) {
         ucm_error("mremap(oldptr=%p oldsize=%zu, newsize=%zu) failed: %m",
                   oldptr, oldsize, sys_size);
         return NULL;
     }
+#else
+    newptr = ucm_sys_malloc(sys_size);
+    if (newptr == MAP_FAILED) {
+        return NULL;
+    }
+    memcpy(newptr, ptr, oldsize);
+    ucm_sys_free(oldptr);
+#endif
 
     return ucm_sys_complete_alloc(newptr, sys_size);
 }
@@ -180,11 +189,23 @@ void ucm_parse_proc_self_maps(ucm_proc_maps_cb_t cb, void *arg)
             }
         } else if (read_size == buffer_size - offset) {
             /* enlarge buffer */
+#ifdef MREMAP_MAYMOVE
             buffer = ucm_orig_mremap(buffer, buffer_size, buffer_size * 2,
                                      MREMAP_MAYMOVE);
             if (buffer == MAP_FAILED) {
                 ucm_fatal("failed to allocate maps buffer(size=%zu)", buffer_size);
             }
+#else
+	    char *buffer1;
+	    buffer1 = ucm_orig_mmap(NULL, buffer_size * 2, PROT_READ|PROT_WRITE,
+                               MAP_PRIVATE|MAP_ANONYMOUS, -1, 0);
+            if (buffer == MAP_FAILED) {
+                ucm_fatal("failed to allocate maps buffer(size=%zu)", buffer_size * 2);
+            }
+	    memcpy(buffer1, buffer, buffer_size);
+	    ucm_orig_munmap(buffer, buffer_size);
+	    buffer = buffer1;
+#endif
             buffer_size *= 2;
 
             /* read again from the beginning of the file */

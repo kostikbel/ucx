@@ -1054,7 +1054,14 @@ void *ucs_sys_realloc(void *old_ptr, size_t old_length, size_t new_length)
     if (old_ptr == NULL) {
         /* Note: Must pass the 0 offset as "long", otherwise it will be
          * partially undefined when converted to syscall arguments */
-        ptr = (void*)syscall(__NR_mmap, NULL, new_length, PROT_READ|PROT_WRITE,
+#if defined(__NR_mmap)
+        ptr = (void*)syscall(__NR_mmap,
+#elif defined(SYS_mmap)
+        ptr = (void*)__syscall(SYS_mmap,
+#else
+#error "Port me"
+#endif
+			     NULL, new_length, PROT_READ|PROT_WRITE,
                              MAP_PRIVATE|MAP_ANONYMOUS, -1, 0ul);
         if (ptr == MAP_FAILED) {
             ucs_log_fatal_error("mmap(NULL, %zu, READ|WRITE, PRIVATE|ANON) failed: %m",
@@ -1063,8 +1070,19 @@ void *ucs_sys_realloc(void *old_ptr, size_t old_length, size_t new_length)
         }
     } else {
         old_length = ucs_align_up_pow2(old_length, ucs_get_page_size());
+#if defined(__MR_mremap)
         ptr = (void*)syscall(__NR_mremap, old_ptr, old_length, new_length,
                              MREMAP_MAYMOVE);
+#elif defined(SYS_mmap)
+	ptr = (void *)__syscall(SYS_mmap, new_length, PROT_READ|PROT_WRITE,
+				MAP_PRIVATE|MAP_ANONYMOUS, -1, 0ul);
+	if (ptr != MAP_FAILED) {
+	    memcpy(ptr, old_ptr, old_length);
+	    syscall(SYS_munmap, old_ptr, old_length);
+	}
+#else
+#error "Port me"
+#endif
         if (ptr == MAP_FAILED) {
             ucs_log_fatal_error("mremap(%p, %zu, %zu, MAYMOVE) failed: %m",
                                 old_ptr, old_length, new_length);
@@ -1081,7 +1099,15 @@ void ucs_sys_free(void *ptr, size_t length)
 
     if (ptr != NULL) {
         length = ucs_align_up_pow2(length, ucs_get_page_size());
-        ret = syscall(__NR_munmap, ptr, length);
+        ret = syscall(
+#if defined(__NR_munmap)
+		      __NR_munmap,
+#elif defined(SYS_munmap)
+		      SYS_munmap,
+#else
+#error "Port me"
+#endif
+		      ptr, length);
         if (ret) {
             ucs_log_fatal_error("munmap(%p, %zu) failed: %m", ptr, length);
         }
