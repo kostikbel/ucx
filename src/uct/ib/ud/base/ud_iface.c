@@ -19,8 +19,9 @@
 #include <ucs/datastruct/queue.h>
 #include <sys/poll.h>
 #include <netinet/in.h>
+#ifdef HAVE_LINUX_IP_H
 #include <linux/ip.h>
-
+#endif
 
 #define UCT_UD_IPV4_ADDR_LEN sizeof(struct in_addr)
 #define UCT_UD_IPV6_ADDR_LEN sizeof(struct in6_addr)
