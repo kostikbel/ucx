@@ -4,6 +4,10 @@
 * See file LICENSE for terms.
 */
 
+#ifdef HAVE_CONFIG_H
+#  include "config.h"
+#endif
+
 #include "ib_device.h"
 #include "ib_md.h"
 
@@ -17,6 +21,10 @@
 #include <sys/poll.h>
 #include <sched.h>
 #include <netinet/in.h>
+
+#ifdef HAVE_IN6_ADDR_U6_ADDR32
+#define	s6_addr32	__u6_addr.__u6_addr32
+#endif
 
 typedef struct {
     union ibv_gid       gid;
