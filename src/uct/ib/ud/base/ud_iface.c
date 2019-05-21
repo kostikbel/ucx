@@ -22,6 +22,9 @@
 #ifdef HAVE_LINUX_IP_H
 #include <linux/ip.h>
 #endif
+#ifdef HAVE_NETINET_IP_H
+#include <netinet/ip.h>
+#endif
 
 #define UCT_UD_IPV4_ADDR_LEN sizeof(struct in_addr)
 #define UCT_UD_IPV6_ADDR_LEN sizeof(struct in6_addr)
@@ -366,8 +369,15 @@ static void uct_ud_iface_calc_gid_len(uct_ud_iface_t *iface)
     uint16_t *local_gid_u16 = (uint16_t*)iface->super.gid.raw;
 
     /* Make sure that daddr in IPv4 resides in the last 4 bytes in GRH */
+#if defined(HAVE_IPHDR_DADDR)
     UCS_STATIC_ASSERT((UCT_IB_GRH_LEN - (20 + offsetof(struct iphdr, daddr))) ==
                       UCT_UD_IPV4_ADDR_LEN);
+#elif defined(HAVE_IP_IP_DST)
+    UCS_STATIC_ASSERT((UCT_IB_GRH_LEN - (20 + offsetof(struct ip, ip_dst))) ==
+                      UCT_UD_IPV4_ADDR_LEN);
+#else
+#error "Port me"
+#endif
 
     /* Make sure that dgid resides in the last 16 bytes in GRH */
     UCS_STATIC_ASSERT((UCT_IB_GRH_LEN - offsetof(struct ibv_grh, dgid)) ==
