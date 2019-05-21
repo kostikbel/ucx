@@ -150,7 +150,7 @@ static void *ucs_module_dlsym_shallow(const char *module_path, void *dl,
     /* return the symbol only if it was found in the requested library, and not,
      * for example, in one of its dependencies.
      */
-    if (lm_entry->l_addr != (uintptr_t)dl_info.dli_fbase) {
+    if ((uintptr_t)lm_entry->l_addr != (uintptr_t)dl_info.dli_fbase) {
         ucs_module_debug("ignoring '%s' (%p) from %s (%p), expected in %s (%lx)",
                          symbol, addr, ucs_basename(dl_info.dli_fname),
                          dl_info.dli_fbase, ucs_basename(module_path),
