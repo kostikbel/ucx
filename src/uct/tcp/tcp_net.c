@@ -11,10 +11,12 @@
 #endif
 
 #include <ucs/sys/string.h>
+#ifdef __linux__
 #include <linux/sockios.h>
 #include <linux/types.h>
 #include <linux/ethtool.h>
 #include <linux/if_ether.h>
+#endif
 #include <sys/ioctl.h>
 #include <net/if_arp.h>
 #include <net/if.h>
