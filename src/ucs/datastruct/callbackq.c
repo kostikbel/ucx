@@ -54,7 +54,7 @@ static unsigned ucs_callbackq_slow_proxy(void *arg);
 
 static inline ucs_callbackq_priv_t* ucs_callbackq_priv(ucs_callbackq_t *cbq)
 {
-    UCS_STATIC_ASSERT(sizeof(cbq->priv) == sizeof(ucs_callbackq_priv_t));
+    UCS_STATIC_ASSERT(sizeof(cbq->priv) >= sizeof(ucs_callbackq_priv_t));
     return (void*)cbq->priv;
 }
 
