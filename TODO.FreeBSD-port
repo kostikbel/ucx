@@ -1,0 +1,8 @@
+sys/eventfd.h epoll-shims
+CPU type detection in configure
+F_SETSIG/siginfo->si_fd
+futexes in stats.c
+sys.c use of procfs
+ethtool
+
+Check on Linux
