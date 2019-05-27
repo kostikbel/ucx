@@ -1011,8 +1011,17 @@ static ucs_status_t uct_ib_iface_get_numa_latency(uct_ib_iface_t *iface,
 #endif
 
     /* Estimate the extra device latency according to its local CPUs mask */
+#if defined(__linux__)
     CPU_AND(&temp_cpu_mask, &dev->local_cpus, &process_affinity);
-    if (CPU_EQUAL(&process_affinity, &temp_cpu_mask)) {
+    if (CPU_EQUAL(&process_affinity, &temp_cpu_mask))
+#elif defined(__FreeBSD__)
+    CPU_COPY(&process_affinity, &temp_cpu_mask);
+    CPU_AND(&temp_cpu_mask, &dev->local_cpus);
+    if (CPU_CMP(&process_affinity, &temp_cpu_mask))
+#else
+#error "Port me"
+#endif
+    {
         *latency = 0;
     } else {
         *latency = 200e-9;
