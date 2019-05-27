@@ -165,13 +165,23 @@ static uint64_t ucs_get_mac_address(void)
             }
 
             if (!(ifr.ifr_flags & IFF_LOOPBACK)) {
+#if defined(SIOCGIFHWADDR)
                 if (ioctl(sock, SIOCGIFHWADDR, &ifr) != 0) {
                     ucs_error("ioctl(SIOCGIFHWADDR) failed: %m");
                     close(sock);
                     return 0;
                 }
-
                 memcpy(&mac_address, ifr.ifr_hwaddr.sa_data, 6);
+#elif defined(SIOCGHWADDR)
+                if (ioctl(sock, SIOCGHWADDR, &ifr) != 0) {
+                    ucs_error("ioctl(SIOCGHWADDR) failed: %m");
+                    close(sock);
+                    return 0;
+                }
+                memcpy(&mac_address, ifr.ifr_addr.sa_data, 6);
+#else
+#error "Port me"
+#endif
                 break;
             }
         }

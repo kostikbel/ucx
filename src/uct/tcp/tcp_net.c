@@ -62,6 +62,13 @@ ucs_status_t uct_tcp_netif_caps(const char *if_name, double *latency_p,
         ucs_debug("speed of %s is UNKNOWN, assuming %d Mbps", if_name, speed_mbps);
     }
 
+#if !defined(SIOCGIFHWADDR)
+#if defined(SIOCGHWADDR)
+#define	SIOCGIFHWADDR SIOCGHWADDR
+#else
+#error "Port me"
+#endif
+#endif
     status = ucs_netif_ioctl(if_name, SIOCGIFHWADDR, &ifr);
     if (status == UCS_OK) {
         ether_type = ifr.ifr_addr.sa_family;
