@@ -21,6 +21,9 @@
 #include <net/if_arp.h>
 #include <net/if.h>
 #include <netdb.h>
+#ifdef HAVE_NET_ETHERNET_H
+#include <net/ethernet.h>
+#endif
 
 
 typedef ssize_t (*uct_tcp_io_func_t)(int fd, void *data, size_t size, int flags);
@@ -86,6 +89,20 @@ ucs_status_t uct_tcp_netif_caps(const char *if_name, double *latency_p,
     switch (ether_type) {
     case ARPHRD_ETHER:
         /* https://en.wikipedia.org/wiki/Ethernet_frame */
+#if !defined(ETH_HLEN)
+#if defined(ETHER_HDR_LEN)
+#define	ETH_HLEN	ETHER_HDR_LEN
+#else
+#error "Port me"
+#endif
+#endif
+#if !defined(ETH_FCS_LEN)
+#if defined(ETHER_CRC_LEN)
+#define	ETH_FCS_LEN	ETHER_CRC_LEN
+#else
+#error "Port me"
+#endif
+#endif
         ll_headers = 7 + /* preamble */
                      1 + /* start-of-frame */
                      ETH_HLEN + /* src MAC + dst MAC + ethertype */
