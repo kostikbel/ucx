@@ -26,11 +26,12 @@
 #include <ucs/sys/string.h>
 #include <ucs/arch/atomic.h>
 #include <sys/poll.h>
+#ifdef HAVE_SYS_EVENTFD_H
 #include <sys/eventfd.h>
+#endif
 #ifdef HAVE_SYS_EPOLL_H
 #include <sys/epoll.h>
 #endif
-
 
 #define UCP_WORKER_HEADROOM_SIZE \
     (sizeof(ucp_recv_desc_t) + UCP_WORKER_HEADROOM_PRIV_SIZE)
@@ -245,6 +246,9 @@ static ucs_status_t ucp_worker_wakeup_init(ucp_worker_h worker,
     ucp_context_h context = worker->context;
     unsigned events;
     ucs_status_t status;
+#ifndef HAVE_SYS_EVENTFD_H
+    int pipes[2];
+#endif
 
     if (!(context->config.features & UCP_FEATURE_WAKEUP)) {
         worker->event_fd   = -1;
@@ -282,8 +286,15 @@ static ucs_status_t ucp_worker_wakeup_init(ucp_worker_h worker,
         worker->flags |= UCP_WORKER_FLAG_EDGE_TRIGGERED;
     }
 
+#ifdef HAVE_SYS_EVENTFD_H
     worker->eventfd = eventfd(0, EFD_CLOEXEC | EFD_NONBLOCK);
     if (worker->eventfd == -1) {
+#else
+    if (pipe2(pipes, O_CLOEXEC | O_NONBLOCK) != -1) {
+        worker->eventfd = pipes[0];
+        worker->eventfd1 = pipes[1];
+    } else {
+#endif
         ucs_error("Failed to create event fd: %m");
         status = UCS_ERR_IO_ERROR;
         goto err_cleanup_event_set;
@@ -333,6 +344,9 @@ static void ucp_worker_wakeup_cleanup(ucp_worker_h worker)
     }
     if (worker->eventfd != -1) {
         close(worker->eventfd);
+#ifndef HAVE_SYS_EVENTFD_H
+	close(worker->eventfd1);
+#endif
     }
 }
 
@@ -357,6 +371,7 @@ static ucs_status_t ucp_worker_wakeup_signal_fd(ucp_worker_h worker)
 
     ucs_trace_func("worker=%p fd=%d", worker, worker->eventfd);
 
+#ifdef HAVE_SYS_EVENTFD_H
     do {
         ret = write(worker->eventfd, &dummy, sizeof(dummy));
         if (ret == sizeof(dummy)) {
@@ -372,7 +387,23 @@ static ucs_status_t ucp_worker_wakeup_signal_fd(ucp_worker_h worker)
             ucs_assert(ret == 0);
         }
     } while (ret == 0);
-
+#else
+    do {
+        ret = write(worker->eventfd1, &dummy, sizeof(dummy));
+        if (ret == sizeof(dummy)) {
+            return UCS_OK;
+        } else if (ret == -1) {
+            if (errno == EAGAIN) {
+                return UCS_OK;
+            } else if (errno != EINTR) {
+                ucs_error("Signaling wakeup failed: %m");
+                return UCS_ERR_IO_ERROR;
+            }
+        } else {
+            ucs_assert(ret == 0);
+        }
+    } while (ret != 0); /* EOF */
+#endif
     return UCS_OK;
 }
 

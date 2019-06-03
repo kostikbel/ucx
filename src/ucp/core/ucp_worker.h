@@ -219,6 +219,7 @@ typedef struct ucp_worker {
     int                           event_fd;      /* Allocated (on-demand) event fd for wakeup */
     ucs_sys_event_set_t           *event_set;    /* Allocated UCS event set for wakeup */
     int                           eventfd;       /* Event fd to support signal() calls */
+    int                           eventfd1;
     unsigned                      uct_events;    /* UCT arm events */
     ucs_list_link_t               arm_ifaces;    /* List of interfaces to arm */
 
