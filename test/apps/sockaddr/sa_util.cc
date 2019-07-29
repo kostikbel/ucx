@@ -4,6 +4,10 @@
  * See file LICENSE for terms.
  */
 
+#ifdef HAVE_CONFIG_H
+#  include "config.h"
+#endif
+
 #include "sa_util.h"
 
 #ifdef HAVE_SYS_EPOLL_H
