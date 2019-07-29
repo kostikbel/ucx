@@ -32,6 +32,9 @@
 #include <fcntl.h>
 #include <link.h>
 #include <limits.h>
+#if HAVE_LIBGEN_H
+#include <libgen.h>
+#endif
 
 #ifndef ElfW
 #if __ELF_WORD_SIZE == 64

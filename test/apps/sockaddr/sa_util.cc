@@ -17,6 +17,9 @@
 #include <unistd.h>
 #include <cstring>
 #include <climits>
+#if HAVE_LIBGEN_H
+#include <libgen.h>
+#endif
 
 
 error::error(const std::string& message) : m_message(message) {

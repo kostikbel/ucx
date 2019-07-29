@@ -36,6 +36,9 @@
 #elif HAVE_RTE
 #   include<rte.h>
 #endif
+#if HAVE_LIBGEN_H
+#include <libgen.h>
+#endif
 
 #define MAX_BATCH_FILES         32
 #define TL_RESOURCE_NAME_NONE   "<none>"

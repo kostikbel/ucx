@@ -24,6 +24,9 @@
 #include <stdio.h>
 #include <assert.h>
 #include <errno.h>
+#if HAVE_LIBGEN_H
+#include <libgen.h>
+#endif
 
 
 #define INDENT             4
